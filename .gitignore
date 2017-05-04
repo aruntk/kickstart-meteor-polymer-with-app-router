@@ -2,3 +2,4 @@ node_modules/
 packages
 public/bower_components
 imports/ui/bower_components
+npm-debug.log

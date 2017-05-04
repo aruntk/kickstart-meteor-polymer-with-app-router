@@ -1,12 +1,20 @@
 <link rel="import" href="../components/test-element.html">
 <dom-module id="test-layout">
-  <style>
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
+    <style>
 .main{
   @apply(--layout-horizontal);
   @apply(--layout-center-center);
 }
-  </style>
-  <template>
+    app-header {
+      background-color: var(--primary-color);
+      color: #fff;
+    }
+    app-header paper-icon-button {
+      --paper-icon-button-ink-color: white;
+    }
+    </style>
 
     <!--================== <Router> ================-->
 
@@ -16,21 +24,23 @@
 
     <!--================= </Router> ================-->
 
-    <paper-header-panel class="fit layout">
+    <app-header-layout class="fit layout vertical">
+      <app-header fixed condenses>
+        <app-toolbar>
 
-      <paper-toolbar>
-
-        <div class="flex"><h1>Synthesis
-            <template is="dom-if" if="[[notCordova]]">
-              is Meteor + Polymer!
-            </template>
-          </h1></div>
+          <div class="flex">
+            <h1>Synthesis
+              <template is="dom-if" if="[[notCordova]]">
+                is Meteor + Polymer!
+              </template>
+            </h1>
+          </div>
 
           <div class="">
             {{appState}}
           </div>
-      </paper-toolbar>
-
+        </app-toolbar>
+      </app-header>
       <iron-pages class="flex main" id="mainView" selected="{{routeData.page}}" attr-for-selected="name">
 
         <paper-card heading="ROUTE:1" id="region1" name="">
@@ -57,7 +67,7 @@
 
       </iron-pages>
 
-    </paper-header-panel>
+    </app-header-layout>
 
   </template>
 </dom-module>

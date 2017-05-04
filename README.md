@@ -1,3 +1,8 @@
+
+> Demo using meteor dynamic import https://github.com/aruntk/kickstart-meteor-polymer-with-app-route/tree/dynamic-import
+
+> Checkout this branch for meteor + polymer 2.0 kickstarter app. https://github.com/aruntk/kickstart-meteor-polymer-with-app-route/tree/2.0-preview
+
 # Synthesis is meteor + polymer
 
 ![synthesis1](https://cloud.githubusercontent.com/assets/6007432/14216652/9da7131a-f867-11e5-9f84-6dd75d60dd45.gif)
@@ -48,6 +53,7 @@ window.Polymer = {
   lazyRegister: true
 };
 ```
+
 ### Polymer Weight
 
 ```sh
@@ -138,45 +144,47 @@ body{
 ```js
 //imports/ui/layouts/test-layout.js
 
-import './test-layout.html';
+import { MwcMixin } from 'meteor/mwc:mixin';
 
-Polymer({
-  is:"test-layout",
-  behaviors:[mwcMixin],
-  tracker:function(){
-    this.changeStatus();
-  },
-  changeStatus(){
-    this.set("appState",`Page : ${this.routeData.page || 'home'} , Status : ${Meteor.status().status}`);
+class TestLayout extends MwcMixin(Polymer.Element) {
+  static get is() {
+    return 'test-layout';
+  }
+  static get properties() {
+    return {
+      route: Object,
+      routeData: {
+        type: Object,
+        value: function() {
+          return {
+            page: '',
+          };
+        },
+      },
+      appState: {
+        type: String,
+      },
+      notCordova: Boolean,
+    };
+  }
+  get trackers() {
+    return ['changeStatus(routeData.page)'];
+  }
+  changeStatus(page){
+    this.set("appState",`Page : ${page || 'home'} , Status : ${Meteor.status().status}`);
     if(!Meteor.isCordova){
       this.notCordova = true;
     }
-  },
-  properties:{
-    route:Object,
-    routeData:{
-      type: Object,
-      value: function() {
-        return {
-          page: ''
-        };
-      }
-    },
-    appState:{
-      type:String
-    },
-    notCordova:Boolean
-
-  },
-  trackers:["changeStatus(routeData.page)"],
-  second:function(){
+  }
+  second(){
     this.set("routeData.page", "second"); 
-  },
-  home:function(){
-
+  }
+  home(){
     this.set("routeData.page", ""); 
   }
-});
+};
+
+window.customElements.define(TestLayout.is, TestLayout);
 
 
 ```
@@ -188,16 +196,20 @@ bower.json
 ```json
 {
   "dependencies": {
-    "paper-elements": "PolymerElements/paper-elements#^1.0.5",
-    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.0",
-    "iron-pages": "PolymerElements/iron-pages#^1.0.0",
-    "polymer": "Polymer/polymer#^1.0.0",
-    "app-route": "PolymerElements/app-route#^0.9.2"
+    "app-route": "PolymerElements/app-route#2.0-preview",
+    "app-layout": "PolymerElements/app-layout#2.0-preview",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#2.0-preview",
+    "iron-pages": "PolymerElements/iron-pages#2.0-preview",
+    "polymer": "Polymer/polymer#2.0.0-rc.2",
+    "paper-button": "PolymerElements/paper-button#2.0-preview",
+    "paper-card": "PolymerElements/paper-card#2.0-preview",
+    "paper-styles": "PolymerElements/paper-styles#2.0-preview"
   },
   "name": "synthesis-demo",
-  "version": "0.0.1"
+  "version": "2.0-preview"
 }
 ```
+
 
 ### Docs
 
@@ -214,3 +226,5 @@ https://forums.meteor.com/t/polymer-meteor-with-meteor-webcomponents-packages/20
 [mwc:synthesis](https://github.com/meteorwebcomponents/synthesis) -  Synthesis is meteor + polymer.
 
 [mwc:mixin](https://github.com/meteorwebcomponents/mixin) -  Polymer data package
+
+
